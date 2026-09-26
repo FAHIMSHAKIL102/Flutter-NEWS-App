@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_news_app/models/news_channel_headlines_model.dart';
+import 'package:flutter_news_app/view/categories_screen.dart';
 import 'package:flutter_news_app/view_model/news_view_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,7 +14,11 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+enum FilterList { bbcNews, aryNews, independet, reuters, cnn, alJezeera }
+
 class _HomeScreenState extends State<HomeScreen> {
+  FilterList? selectedMenu;
+  String name = 'bbc-news';
   NewsViewModel newsViewModel = NewsViewModel();
 
   final format = DateFormat('MMMM dd, yyyy');
@@ -23,7 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CategoriesScreen()),
+            );
+          },
           icon: Image.asset('assets/images/category_icon.png'),
         ),
         centerTitle: true,
@@ -31,14 +42,46 @@ class _HomeScreenState extends State<HomeScreen> {
           'News',
           style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w700),
         ),
+        actions: [
+          PopupMenuButton<FilterList>(
+            iconSize: 40,
+            initialValue: selectedMenu,
+            onSelected: (FilterList item) {
+              if (FilterList.bbcNews.name == item.name) {
+                name = 'bbc-news';
+              }
+              if (FilterList.aryNews.name == item.name) {
+                name = 'ary-news';
+              }
+
+              setState(() {
+                selectedMenu = item;
+              });
+            },
+            itemBuilder: (context) => <PopupMenuEntry<FilterList>>[
+              PopupMenuItem<FilterList>(
+                value: FilterList.bbcNews,
+                child: Text('BBC News'),
+              ),
+              PopupMenuItem<FilterList>(
+                value: FilterList.aryNews,
+                child: Text('Ary News'),
+              ),
+              PopupMenuItem<FilterList>(
+                value: FilterList.alJezeera,
+                child: Text('AlJazeera News'),
+              ),
+            ],
+          ),
+        ],
       ),
       body: ListView(
         children: [
           SizedBox(
             height: height * .55,
             width: width,
-            child: FutureBuilder(
-              future: newsViewModel.fetchNewsChannelHeadlinesApi(),
+            child: FutureBuilder<NewsChannelsHeadlinesModel>(
+              future: newsViewModel.fetchNewsChannelHeadlinesApi(name),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SpinKitCircle(size: 50, color: Colors.blue);
@@ -99,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     mainAxisAlignment: .center,
                                     crossAxisAlignment: .center,
                                     children: [
-                                      Container(
+                                      SizedBox(
                                         width: width * .7,
                                         child: Text(
                                           snapshot.data!.articles![index].title
@@ -113,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       Spacer(),
-                                      Container(
+                                      SizedBox(
                                         width: width * .7,
                                         child: Row(
                                           mainAxisAlignment: .spaceBetween,
