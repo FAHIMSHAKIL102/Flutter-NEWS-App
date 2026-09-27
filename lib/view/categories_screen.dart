@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_news_app/models/categories_news_model.dart';
 import 'package:flutter_news_app/view/home_screen.dart';
+import 'package:flutter_news_app/view/news_details_screen.dart';
 import 'package:flutter_news_app/view_model/news_view_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -96,78 +97,126 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           snapshot.data!.articles![index].publishedAt
                               .toString(),
                         );
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 15),
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(
-                                  15,
-                                ),
-                                child: CachedNetworkImage(
-                                  height: height * .18,
-                                  width: width * .3,
-                                  imageUrl: snapshot
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => NewsDetailsScreen(
+                                  newImage: snapshot
                                       .data!
                                       .articles![index]
                                       .urlToImage
                                       .toString(),
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) => Center(
-                                    child: SpinKitFadingCircle(
-                                      color: Colors.amber,
-                                      size: 50,
+                                  newsTitle: snapshot
+                                      .data!
+                                      .articles![index]
+                                      .title
+                                      .toString(),
+                                  newsDate: snapshot
+                                      .data!
+                                      .articles![index]
+                                      .publishedAt
+                                      .toString(),
+                                  author: snapshot.data!.articles![index].author
+                                      .toString(),
+                                  description: snapshot
+                                      .data!
+                                      .articles![index]
+                                      .description
+                                      .toString(),
+                                  content: snapshot
+                                      .data!
+                                      .articles![index]
+                                      .content
+                                      .toString(),
+                                  source: snapshot
+                                      .data!
+                                      .articles![index]
+                                      .source!
+                                      .name
+                                      .toString(),
+                                ),
+                              ),
+                            );
+                          },
+                          child: SizedBox(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: CachedNetworkImage(
+                                      height: height * .18,
+                                      width: width * .3,
+                                      imageUrl: snapshot
+                                          .data!
+                                          .articles![index]
+                                          .urlToImage
+                                          .toString(),
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Center(
+                                        child: SpinKitFadingCircle(
+                                          color: Colors.amber,
+                                          size: 50,
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(
+                                            Icons.error_outline,
+                                            color: Colors.red,
+                                          ),
                                     ),
                                   ),
-                                  errorWidget: (context, url, error) => Icon(
-                                    Icons.error_outline,
-                                    color: Colors.red,
+
+                                  Expanded(
+                                    child: Container(
+                                      height: height * .18,
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Column(
+                                        crossAxisAlignment: .start,
+                                        children: [
+                                          Text(
+                                            snapshot
+                                                .data!
+                                                .articles![index]
+                                                .title
+                                                .toString(),
+                                            maxLines: 3,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 15,
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          Text(
+                                            snapshot
+                                                .data!
+                                                .articles![index]
+                                                .source!
+                                                .name
+                                                .toString(),
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 15,
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Text(
+                                            format.format(dateTime),
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                        
-                              Expanded(
-                                child: Container(
-                                  height: height * .18,
-                                  padding: EdgeInsets.only(left: 15),
-                                  child: Column(
-                                    crossAxisAlignment: .start,
-                                    children: [
-                                      Text(
-                                        snapshot.data!.articles![index].title
-                                            .toString(),
-                                             maxLines: 3,
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 15,
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      Text(
-                                        snapshot
-                                            .data!
-                                            .articles![index]
-                                            .source!
-                                            .name
-                                            .toString(),
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 15,
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      Text(
-                                        format.format(dateTime),
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         );
                       },
