@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_news_app/models/categories_news_model.dart';
 import 'package:flutter_news_app/models/news_channel_headlines_model.dart';
 import 'package:flutter_news_app/view/categories_screen.dart';
 import 'package:flutter_news_app/view_model/news_view_model.dart';
@@ -161,27 +162,33 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: Row(
                                           mainAxisAlignment: .spaceBetween,
                                           children: [
-                                            Text(
-                                              snapshot
-                                                  .data!
-                                                  .articles![index]
-                                                  .source!
-                                                  .name
-                                                  .toString(),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
+                                            Expanded(
+                                              flex: 2,
+                                              child: Text(
+                                                snapshot
+                                                    .data!
+                                                    .articles![index]
+                                                    .source!
+                                                    .name
+                                                    .toString(),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
                                               ),
                                             ),
-                                            Text(
-                                              format.format(dateTime),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
+                                            Expanded(
+                                              child: Text(
+                                                format.format(dateTime),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.end,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -189,6 +196,100 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ],
                                   ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+
+          // News Headlines
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: FutureBuilder<CategoriesNewsModel>(
+              future: newsViewModel.fetchCategoriesNewsApi('General'),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SpinKitCircle(size: 50, color: Colors.blue);
+                } else {
+                  return ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.articles!.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      DateTime dateTime = DateTime.parse(
+                        snapshot.data!.articles![index].publishedAt.toString(),
+                      );
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 15),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: CachedNetworkImage(
+                                height: height * .18,
+                                width: width * .3,
+                                imageUrl: snapshot
+                                    .data!
+                                    .articles![index]
+                                    .urlToImage
+                                    .toString(),
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => Center(
+                                  child: SpinKitFadingCircle(
+                                    color: Colors.amber,
+                                    size: 50,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Icon(
+                                  Icons.error_outline,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+
+                            Expanded(
+                              child: Container(
+                                height: height * .18,
+                                padding: EdgeInsets.only(left: 15),
+                                child: Column(
+                                  crossAxisAlignment: .start,
+                                  children: [
+                                    Text(
+                                      snapshot.data!.articles![index].title
+                                          .toString(),
+                                      maxLines: 3,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 15,
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Text(
+                                      snapshot
+                                          .data!
+                                          .articles![index]
+                                          .source!
+                                          .name
+                                          .toString(),
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 15,
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Text(
+                                      format.format(dateTime),
+                                      style: GoogleFonts.poppins(fontSize: 15),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),

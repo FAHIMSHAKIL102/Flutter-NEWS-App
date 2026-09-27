@@ -96,38 +96,78 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           snapshot.data!.articles![index].publishedAt
                               .toString(),
                         );
-                        return SizedBox(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadiusGeometry.circular(
-                                    15,
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 15),
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  15,
+                                ),
+                                child: CachedNetworkImage(
+                                  height: height * .18,
+                                  width: width * .3,
+                                  imageUrl: snapshot
+                                      .data!
+                                      .articles![index]
+                                      .urlToImage
+                                      .toString(),
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => Center(
+                                    child: SpinKitFadingCircle(
+                                      color: Colors.amber,
+                                      size: 50,
+                                    ),
                                   ),
-                                  child: CachedNetworkImage(
-                                    height: height * .18,
-                                    width: width * .3,
-                                    imageUrl: snapshot
-                                        .data!
-                                        .articles![index]
-                                        .urlToImage
-                                        .toString(),
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) => Center(
-                                      child: SpinKitFadingCircle(
-                                        color: Colors.amber,
-                                        size: 50,
-                                      ),
-                                    ),
-                                    errorWidget: (context, url, error) => Icon(
-                                      Icons.error_outline,
-                                      color: Colors.red,
-                                    ),
+                                  errorWidget: (context, url, error) => Icon(
+                                    Icons.error_outline,
+                                    color: Colors.red,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                        
+                              Expanded(
+                                child: Container(
+                                  height: height * .18,
+                                  padding: EdgeInsets.only(left: 15),
+                                  child: Column(
+                                    crossAxisAlignment: .start,
+                                    children: [
+                                      Text(
+                                        snapshot.data!.articles![index].title
+                                            .toString(),
+                                             maxLines: 3,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 15,
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        snapshot
+                                            .data!
+                                            .articles![index]
+                                            .source!
+                                            .name
+                                            .toString(),
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 15,
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      Text(
+                                        format.format(dateTime),
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       },
