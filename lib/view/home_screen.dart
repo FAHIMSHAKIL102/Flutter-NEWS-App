@@ -16,11 +16,16 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-enum FilterList { bbcNews, aryNews, independet, reuters, cnn, alJezeera }
-
 class _HomeScreenState extends State<HomeScreen> {
-  FilterList? selectedMenu;
+  String selectedSource = 'BBC News';
   String name = 'bbc-news';
+  final Map<String, dynamic> newsSources = {
+    'BBC News': 'bbc-news',
+    'Ary News': 'ary-news',
+    'AlJazeera News': 'al-jazeera',
+    'Reuters': 'reuters',
+    'CNN': 'cnn',
+  };
   NewsViewModel newsViewModel = NewsViewModel();
 
   final format = DateFormat('MMMM dd, yyyy');
@@ -45,35 +50,29 @@ class _HomeScreenState extends State<HomeScreen> {
           style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w700),
         ),
         actions: [
-          PopupMenuButton<FilterList>(
+          PopupMenuButton<String>(
             iconSize: 40,
-            initialValue: selectedMenu,
-            onSelected: (FilterList item) {
-              if (FilterList.bbcNews.name == item.name) {
-                name = 'bbc-news';
-              }
-              if (FilterList.aryNews.name == item.name) {
-                name = 'ary-news';
-              }
-
+            initialValue: selectedSource,
+            onSelected: (String selectedName) {
               setState(() {
-                selectedMenu = item;
+                // selectedName = Map key
+                selectedSource = selectedName;
+
+                // Get ID from Map value
+                name = newsSources[selectedName];
               });
+
+              print('Name: $selectedName');
+              print('ID: $name');
             },
-            itemBuilder: (context) => <PopupMenuEntry<FilterList>>[
-              PopupMenuItem<FilterList>(
-                value: FilterList.bbcNews,
-                child: Text('BBC News'),
-              ),
-              PopupMenuItem<FilterList>(
-                value: FilterList.aryNews,
-                child: Text('Ary News'),
-              ),
-              PopupMenuItem<FilterList>(
-                value: FilterList.alJezeera,
-                child: Text('AlJazeera News'),
-              ),
-            ],
+            itemBuilder: (context) {
+              return newsSources.keys.map((String sourceName) {
+                return PopupMenuItem<String>(
+                  value: sourceName,
+                  child: Text(sourceName),
+                );
+              }).toList();
+            },
           ),
         ],
       ),
@@ -87,6 +86,15 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SpinKitCircle(size: 50, color: Colors.blue);
+                } else if (snapshot.hasError) {
+                  return Column(
+                    mainAxisAlignment: .center,
+                    crossAxisAlignment: .center,
+                    children: [
+                      Icon(Icons.error, color: Colors.red, size: 40),
+                      Text("404 Not Found ", style: TextStyle(fontSize: 25)),
+                    ],
+                  );
                 } else {
                   return ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -143,9 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: height * .5,
                                 width: width * .9,
                                 child: ClipRRect(
-                                  borderRadius: BorderRadiusGeometry.circular(
-                                    15,
-                                  ),
+                                  borderRadius: BorderRadius.circular(15),
                                   child: CachedNetworkImage(
                                     imageUrl: snapshot
                                         .data!
@@ -167,13 +173,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
 
                               Positioned(
-                                bottom: 20,
+                                bottom: 30,
                                 child: Card(
                                   elevation: 5,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      12,
-                                    ),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Container(
                                     padding: EdgeInsets.all(15),
@@ -263,6 +267,15 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SpinKitCircle(size: 50, color: Colors.blue);
+                } else if (snapshot.hasError) {
+                  return Column(
+                    mainAxisAlignment: .center,
+                    crossAxisAlignment: .center,
+                    children: [
+                      Icon(Icons.error, color: Colors.red, size: 40),
+                      Text("404 Not Found ", style: TextStyle(fontSize: 25)),
+                    ],
+                  );
                 } else {
                   return ListView.builder(
                     physics: NeverScrollableScrollPhysics(),

@@ -31,14 +31,12 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.heightOf(context);
-    final width = MediaQuery.widthOf(context);
     DateTime dateTime = DateTime.parse(widget.newsDate);
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
       body: Stack(
         children: [
           SizedBox(
-            height: height * .45,
+            height: height * .55,
             child: ClipRRect(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(25),
@@ -55,9 +53,15 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
 
           Container(
             height: height * .6,
-            margin: EdgeInsets.only(top: height * .4),
+            margin: EdgeInsets.only(top: height * .5),
             padding: EdgeInsets.only(top: 20, right: 20, left: 20),
-            decoration: BoxDecoration(color: Colors.white),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(25),
+                topRight: Radius.circular(25),
+              ),
+            ),
             child: ListView(
               children: [
                 Text(
@@ -99,7 +103,37 @@ class _NewsDetailsScreenState extends State<NewsDetailsScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+                SizedBox(height: 20),
+                Text(
+                  widget.content,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
+            ),
+          ),
+          Positioned(
+            left: 15,
+            top: 50,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                height: 30,
+                width: 30,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blue),
+                  shape: BoxShape.circle,
+                  color: Colors.blue,
+                ),
+                child: Center(
+                  child: Icon(Icons.arrow_back_rounded, color: Colors.white),
+                ),
+              ),
             ),
           ),
         ],
