@@ -1,69 +1,79 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_news_app/models/categories_news_model.dart';
+import 'package:flutter_news_app/models/language_news_model.dart';
 import 'package:flutter_news_app/view/news_details_screen.dart';
 import 'package:flutter_news_app/view_model/news_view_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-class CategoriesScreen extends StatefulWidget {
+class LanguageScreen extends StatefulWidget {
   const new({super.key});
 
   @override
-  State<CategoriesScreen> createState() => _CategoriesScreenState();
+  State<LanguageScreen> createState() => _LanguageScreenState();
 }
 
-class _CategoriesScreenState extends State<CategoriesScreen> {
-  String categoryName = 'General';
+class _LanguageScreenState extends State<LanguageScreen> {
+  String languageName = 'en';
 
-  List<String> newsCategories = [
-    'General',
-    'Entertainment',
-    'Health',
-    'Sports',
-    'Business',
-    'Technology',
+  List<Map<String, String>> languageNews = [
+    {"Name": "English", "Code": "en"},
+    {"Name": "Arabic", "Code": "ar"},
+    {"Name": "German", "Code": "de"},
+    {"Name": "Spanish", "Code": "es"},
+    {"Name": "French", "Code": "fr"},
+    {"Name": "Hebrew", "Code": "he"},
+    {"Name": "Italian", "Code": "it"},
+    {"Name": "Dutch", "Code": "nl"},
+    {"Name": "Norwegian", "Code": "no"},
+    {"Name": "Portuguese", "Code": "pt"},
+    {"Name": "Russian", "Code": "ru"},
+    {"Name": "Swedish", "Code": "sv"},
+    {"Name": "Urdu", "Code": "ud"},
+    {"Name": "Chinese", "Code": "zh"},
   ];
+
   NewsViewModel newsViewModel = NewsViewModel();
 
   final format = DateFormat('MMMM dd, yyyy');
-
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.heightOf(context);
     final width = MediaQuery.widthOf(context);
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.blue.shade400),
+        iconTheme: IconThemeData(color: Colors.green.shade400),
         title: Text(
-          'Category',
-          style: GoogleFonts.poppins(color: Colors.blue.shade400, fontSize: 25),
+          'Language',
+          style: GoogleFonts.poppins(
+            color: Colors.green.shade400,
+            fontSize: 25,
+          ),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            SizedBox(height: 20),
             SizedBox(
               height: 50,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: newsCategories.length,
+                itemCount: languageNews.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        categoryName = newsCategories[index];
+                        languageName = languageNews[index]['Code']!;
                       });
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: categoryName == newsCategories[index]
-                              ? Colors.blue.shade400
+                          color: languageName == languageNews[index]['Code']
+                              ? Colors.green.shade400
                               : Colors.grey.shade400,
                           borderRadius: BorderRadius.circular(25),
                         ),
@@ -71,7 +81,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                              newsCategories[index].toString(),
+                              languageNews[index]['Name']!,
                               style: GoogleFonts.poppins(
                                 color: Colors.white.withValues(alpha: 1.5),
                                 fontSize: 15,
@@ -89,8 +99,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             SizedBox(height: 20),
 
             Expanded(
-              child: FutureBuilder<CategoriesNewsModel>(
-                future: newsViewModel.fetchCategoriesNewsApi(categoryName),
+              child: FutureBuilder<LanguageNewsModel>(
+                future: newsViewModel.fetchLanguageNewsApi(languageName),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return SpinKitCircle(size: 50, color: Colors.blue);

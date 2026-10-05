@@ -2,7 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_news_app/models/categories_news_model.dart';
 import 'package:flutter_news_app/models/news_channel_headlines_model.dart';
+import 'package:flutter_news_app/models/news_channels_model.dart';
 import 'package:flutter_news_app/view/categories_screen.dart';
+import 'package:flutter_news_app/view/countries_screen.dart';
+import 'package:flutter_news_app/view/language_screen.dart';
 import 'package:flutter_news_app/view/news_details_screen.dart';
 import 'package:flutter_news_app/view_model/news_view_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -17,32 +20,80 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // String selectedSource = 'BBC News';
+  //String name = 'bbc-news';
+  // final Map<String, dynamic> newsSources = {
+  //   'BBC News': 'bbc-news',
+  //   'Ary News': 'ary-news',
+  //   'AlJazeera News': 'al-jazeera',
+  //   'Reuters': 'reuters',
+  //   'CNN': 'cnn',
+  // };
+
+  // Api Source
+
+  Map<String, String> newsApiSource = {};
   String selectedSource = 'BBC News';
   String name = 'bbc-news';
-  final Map<String, dynamic> newsSources = {
-    'BBC News': 'bbc-news',
-    'Ary News': 'ary-news',
-    'AlJazeera News': 'al-jazeera',
-    'Reuters': 'reuters',
-    'CNN': 'cnn',
-  };
+  List<String> news = ['Category', 'Country', 'Language'];
   NewsViewModel newsViewModel = NewsViewModel();
 
   final format = DateFormat('MMMM dd, yyyy');
+
+  @override
+  void initState() {
+    super.initState();
+    fetchNewsApiSource();
+  }
+
+  Future<void> fetchNewsApiSource() async {
+    final NewsChannelsModel data = await newsViewModel.fetchNewsChannelApi();
+
+    setState(() {
+      newsApiSource = {
+        for (final source in data.sources ?? [])
+          if (source.name != null && source.id != null)
+            source.name!: source.id!,
+      };
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.heightOf(context);
     final width = MediaQuery.widthOf(context);
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CategoriesScreen()),
-            );
-          },
+        leading: PopupMenuButton<String>(
           icon: Image.asset('assets/images/category_icon.png'),
+          onSelected: (String selectedItem) {
+            if (selectedItem == 'Category') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CategoriesScreen()),
+              );
+            }
+            if (selectedItem == 'Country') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CountriesScreen()),
+              );
+            }
+            if (selectedItem == 'Language') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LanguageScreen()),
+              );
+            }
+          },
+          itemBuilder: (context) {
+            return news.map((String toElement) {
+              return PopupMenuItem<String>(
+                value: toElement,
+                child: Text(toElement),
+              );
+            }).toList();
+          },
         ),
         centerTitle: true,
         title: Text(
@@ -50,6 +101,29 @@ class _HomeScreenState extends State<HomeScreen> {
           style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w700),
         ),
         actions: [
+          // PopupMenuButton<String>(
+          //   iconSize: 40,
+          //   initialValue: selectedSource,
+          //   onSelected: (String selectedName) {
+          //     setState(() {
+          //       // selectedName = Map key
+          //       selectedSource = selectedName;
+
+          //       // Get ID from Map value
+          //       name = newsSources[selectedName];
+          //     });
+          //   },
+          //   itemBuilder: (context) {
+          //     return newsSources.keys.map((String sourceName) {
+          //       return PopupMenuItem<String>(
+          //         value: sourceName,
+          //         child: Text(sourceName),
+          //       );
+          //     }).toList();
+          //   },
+          // ),
+
+          // Api
           PopupMenuButton<String>(
             iconSize: 40,
             initialValue: selectedSource,
@@ -57,13 +131,16 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 // selectedName = Map key
                 selectedSource = selectedName;
+                //selectedSource = newsApiSource[name]!;
 
                 // Get ID from Map value
-                name = newsSources[selectedName];
+                name = newsApiSource[selectedName]!;
+                print('Name: $selectedName');
+                print('ID: ${newsApiSource[selectedName]}');
               });
             },
             itemBuilder: (context) {
-              return newsSources.keys.map((String sourceName) {
+              return newsApiSource.keys.map((String sourceName) {
                 return PopupMenuItem<String>(
                   value: sourceName,
                   child: Text(sourceName),

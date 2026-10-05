@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_news_app/models/categories_news_model.dart';
 import 'package:flutter_news_app/models/countries_news_model.dart';
+import 'package:flutter_news_app/models/language_news_model.dart';
 import 'package:flutter_news_app/models/news_channel_headlines_model.dart';
 import 'package:flutter_news_app/models/news_channels_model.dart';
 import 'package:http/http.dart' as http;
@@ -60,17 +61,44 @@ class NewsRepository {
     }
   }
 
-  Future<CountriesNewsModel> fetchCountriesNewsApi() async {
+  Future<CountriesNewsModel> fetchCountriesNewsApi(String country) async {
+    // String url =
+    //     'https://newsapi.org/v2/top-headlines?country=auS&apiKey=8a5ec37e26f845dcb4c2b78463734448';
+
+    // final response = await http.get(Uri.parse(url));
+
     String url =
-        'https://newsapi.org/v2/top-headlines?country=us&apiKey=8a5ec37e26f845dcb4c2b78463734448';
-    final reponse = await http.get(Uri.parse(url));
+        'https://newsapi.org/v2/everything?q=$country&apiKey=8a5ec37e26f845dcb4c2b78463734448';
+
+    final response = await http.get(Uri.parse(url));
+
+    // String url =
+    //     'https://newsapi.org/v2/top-headlines?country=${country}&apiKey=8a5ec37e26f845dcb4c2b78463734448';
+    // final response = await http.get(Uri.parse(url));
     if (kDebugMode) {
       print('Success');
     }
 
-    if (reponse.statusCode == 200) {
-      final data = jsonDecode(reponse.body);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
       return CountriesNewsModel.fromJson(data);
+    } else {
+      throw Exception('Error');
+    }
+  }
+
+  Future<LanguageNewsModel> fetchLanguageNewsApi(String language) async {
+    String url =
+        'https://newsapi.org/v2/everything?q=$language&apiKey=8a5ec37e26f845dcb4c2b78463734448';
+
+    final response = await http.get(Uri.parse(url));
+    if (kDebugMode) {
+      print('Success');
+    }
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return LanguageNewsModel.fromJson(data);
     } else {
       throw Exception('Error');
     }

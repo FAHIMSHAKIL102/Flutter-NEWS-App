@@ -1,5 +1,6 @@
 import 'package:flutter_news_app/models/categories_news_model.dart';
 import 'package:flutter_news_app/models/countries_news_model.dart';
+import 'package:flutter_news_app/models/language_news_model.dart';
 import 'package:flutter_news_app/models/news_channel_headlines_model.dart';
 import 'package:flutter_news_app/models/news_channels_model.dart';
 import 'package:flutter_news_app/repository/news_repository.dart';
@@ -25,8 +26,13 @@ class NewsViewModel {
     return response;
   }
 
-  Future<CountriesNewsModel> fetchCountriesNewsApi() async {
-    final response = await _rep.fetchCountriesNewsApi();
+  Future<CountriesNewsModel> fetchCountriesNewsApi(String country) async {
+    final response = await _rep.fetchCountriesNewsApi(country);
+    return response;
+  }
+
+  Future<LanguageNewsModel> fetchLanguageNewsApi(String language) async {
+    final response = await _rep.fetchLanguageNewsApi(language);
     return response;
   }
 }
