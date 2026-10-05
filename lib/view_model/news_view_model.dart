@@ -4,7 +4,6 @@ import 'package:flutter_news_app/models/language_news_model.dart';
 import 'package:flutter_news_app/models/news_channel_headlines_model.dart';
 import 'package:flutter_news_app/models/news_channels_model.dart';
 import 'package:flutter_news_app/repository/news_repository.dart';
-import 'package:http/http.dart' as http;
 
 class NewsViewModel {
   final _rep = NewsRepository();
