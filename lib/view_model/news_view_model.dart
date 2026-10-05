@@ -1,6 +1,9 @@
 import 'package:flutter_news_app/models/categories_news_model.dart';
+import 'package:flutter_news_app/models/countries_news_model.dart';
 import 'package:flutter_news_app/models/news_channel_headlines_model.dart';
+import 'package:flutter_news_app/models/news_channels_model.dart';
 import 'package:flutter_news_app/repository/news_repository.dart';
+import 'package:http/http.dart' as http;
 
 class NewsViewModel {
   final _rep = NewsRepository();
@@ -14,6 +17,16 @@ class NewsViewModel {
 
   Future<CategoriesNewsModel> fetchCategoriesNewsApi(String category) async {
     final response = await _rep.fetchCategoriesNewsApi(category);
+    return response;
+  }
+
+  Future<NewsChannelsModel> fetchNewsChannelApi() async {
+    final response = await _rep.fetchNewsChannelApi();
+    return response;
+  }
+
+  Future<CountriesNewsModel> fetchCountriesNewsApi() async {
+    final response = await _rep.fetchCountriesNewsApi();
     return response;
   }
 }

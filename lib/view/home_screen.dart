@@ -61,9 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Get ID from Map value
                 name = newsSources[selectedName];
               });
-
-              print('Name: $selectedName');
-              print('ID: $name');
             },
             itemBuilder: (context) {
               return newsSources.keys.map((String sourceName) {
