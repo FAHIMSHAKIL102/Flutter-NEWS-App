@@ -15,8 +15,9 @@ class CountriesScreen extends StatefulWidget {
 }
 
 class _CountriesScreenState extends State<CountriesScreen> {
-  String countryName = 'ae';
+  String countryName = 'us';
   List<Map<String, String>> countryNews = [
+    {"Name": "United States", "Code": "us"},
     {"Name": "United Arab Emirates", "Code": "ae"},
     {"Name": "Argentina", "Code": "ar"},
     {"Name": "Austria", "Code": "at"},
@@ -68,7 +69,6 @@ class _CountriesScreenState extends State<CountriesScreen> {
     {"Name": "Turkey", "Code": "tr"},
     {"Name": "Taiwan", "Code": "tw"},
     {"Name": "Ukraine", "Code": "ua"},
-    {"Name": "United States", "Code": "us"},
     {"Name": "Venezuela", "Code": "ve"},
     {"Name": "South Africa", "Code": "za"},
   ];
